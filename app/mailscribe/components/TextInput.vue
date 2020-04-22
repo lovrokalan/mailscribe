@@ -45,10 +45,12 @@ export default {
 <style lang="scss" scoped>
 @import "~assets/css/global.scss";
 .text-input {
-  padding: 10px 16px;
-  border: 1px solid $input-grey;
-  border-radius: 4px;
-  width: 100%;  
+  padding: 2px 0px 4px 0px;
+  border-bottom: 1px solid $input-grey;
+  width: 100%;
+  outline: none;
+  display: inline;
+  font-size: 18px;
 }
 
 .text-input-label {
@@ -61,6 +63,7 @@ export default {
   min-height: 16px;
   margin-top: 4px;
   color: $error;
-  font-size: 14px;
+  font-size: 11px;
+  text-align: right;
 }
 </style>

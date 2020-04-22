@@ -1,33 +1,45 @@
 <template>
-    <div class="container mx-auto">
-      <ValidationProvider rules="required|email" v-slot="{ errors }">
-        <text-input 
-          v-model="email"
-          :type="'email'"
-          :label="'Email'"
-          :errorMsg="errors[0]"
-        >
-        </text-input>
-      </ValidationProvider>
+    <div class="h-screen flex">
+      <div class="w-11/12 lg:w-1/3 m-auto">
+        <ValidationObserver ref="observer" tag="form" v-slot="{ invalid }">
+          <div class="mb-2">
+            <ValidationProvider rules="required|email" v-slot="{ errors }">
+              <text-input 
+                v-model="email"
+                :type="'email'"
+                :label="'Email'"
+                :errorMsg="errors[0]"
+              >
+              </text-input>
+            </ValidationProvider>
+          </div>
 
-      <text-input 
-        v-model="password"
-        :type="'password'"
-        :label="'Password'"
-      >
-      </text-input>
-      <!-- <div @click="login">Login</div> -->
+          <div class="mb-12">
+            <ValidationProvider rules="required|min:5" v-slot="{ errors }">
+              <text-input 
+                v-model="password"
+                :type="'password'"
+                :label="'Password'"
+                :errorMsg="errors[0]"
+              >
+              </text-input>
+            </ValidationProvider>
+          </div>
+          <div class="main-btn" @click="login(invalid)">Login</div>
+        </ValidationObserver>
+      </div>
     </div>
 </template>
 
 <script>
-import { ValidationProvider } from 'vee-validate';
+import { ValidationProvider, ValidationObserver } from 'vee-validate';
 import TextInput from '~/components/TextInput.vue'
 
 export default {
   components: {
     TextInput,
-    ValidationProvider
+    ValidationProvider,
+    ValidationObserver
   },
   data() {
     return {
@@ -36,16 +48,19 @@ export default {
     }
   },
   methods: {
-    async login() {
-      await this.$axios.$post('/login', {
-        email: this.email,
-        password: this.password
-      });
+    async login(formIsInvalid) {
+      if (!formIsInvalid) {
+        await this.$axios.$post('/login', {
+          email: this.email,
+          password: this.password
+        });
+      } else {
+        await this.$refs.observer.validate();
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>

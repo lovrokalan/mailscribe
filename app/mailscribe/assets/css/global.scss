@@ -1,1 +1,14 @@
 @import "colors";
+
+// buttons: 
+.main-btn {
+  background: $dark-blue;
+  color: $dirty-white;
+  text-align: center;
+  height: 40px;
+  border-radius: 4px;
+  line-height: 40px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
