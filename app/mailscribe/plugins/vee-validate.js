@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate'
-import { required, email, min } from 'vee-validate/dist/rules'
+import { required, email } from 'vee-validate/dist/rules'
 
 extend('email', {
   ...email,
@@ -12,7 +12,17 @@ extend('required', {
 })
 
 extend('min', {
-  ...min,
-  params: ['min'],
-  message: 'At least {min} digits!'
+  validate(value, { length }) {
+    return value.length >= length
+  },
+  params: ['length'],
+  message: 'At least {length} characters!'
+})
+
+extend('password', {
+  params: ['target'],
+  validate(value, { target }) {
+    return value === target
+  },
+  message: 'Password confirmation does not match!'
 })

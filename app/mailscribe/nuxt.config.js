@@ -3,7 +3,7 @@ import pkg from './package'
 const config = require(`./config/${process.env.NODE_ENV}/en.js`);
 
 export default {
-  mode: 'universal',
+  mode: 'spa',
   server: {
     port: 8000
   },

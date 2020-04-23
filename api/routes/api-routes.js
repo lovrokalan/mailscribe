@@ -5,7 +5,10 @@ var passport = require("../config/passport");
 module.exports = function (app) {
   // Using the passport.authenticate middleware with our local strategy.
   app.post("/login", passport.authenticate("local"), function (req, res) {
-    res.json("/members");
+    res.json({
+      email: req.user.email,
+      id: req.user.id,
+    });
   });
 
   // Route for signing up a user. The user's password is automatically hashed and stored securely
@@ -16,8 +19,15 @@ module.exports = function (app) {
     }).then(function () {
       res.redirect(307, "/login");
     }).catch(function (err) {
-      console.log(err);
-      res.json(err);
+      if (err.name === "SequelizeUniqueConstraintError") {
+        res
+          .status(200)
+          .json({ error: "An account with this Email already exists!" });
+      } else {
+        res
+          .status(409)
+          .json({});
+      }
     });
   });
 
