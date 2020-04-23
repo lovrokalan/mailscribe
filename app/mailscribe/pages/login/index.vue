@@ -34,6 +34,9 @@
             <button class="main-btn float-right" @click="login(invalid)">Sign In</button>
           </form>
         </ValidationObserver>
+
+        <div class="error-msg">{{ loginError }}</div>
+
         <div class="sign-up-link-container text-base xl:text-lg serif-font">Don't have an account yet? <nuxt-link to="/signup" class="sign-up-link">Sign Up</nuxt-link></div>
       </div>
 
@@ -58,17 +61,23 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      loginError: ''
     }
   },
   methods: {
     async login(formIsInvalid) {
       if (!formIsInvalid) {
-        const loginResponse = await this.$axios.$post('/login', {
-          email: this.email,
-          password: this.password
-        });
-        console.log(loginResponse);
+        try {
+          const loginResponse = await this.$axios.$post('/login', {
+            email: this.email,
+            password: this.password
+          });
+          console.log(loginResponse);
+          this.$router.push({ path: '/home' });
+        } catch (err) {
+          this.loginError = 'Wrong Email or password!';
+        }
       } else {
         await this.$refs.observer.validate();
       }
@@ -88,7 +97,7 @@ export default {
 }
 
 .sign-up-link-container {
-  margin-top: 130px;
+  margin-top: 50px;
   text-align: right;
   font-weight: 700;
   color: #6c6c6c;
@@ -109,5 +118,13 @@ export default {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 400'%3E%3Cdefs%3E%3CradialGradient id='a' cx='396' cy='281' r='514' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%236b57ef'/%3E%3Cstop offset='1' stop-color='%23332a73'/%3E%3C/radialGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='400' y1='148' x2='400' y2='333'%3E%3Cstop offset='0' stop-color='%234c3eab' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%234c3eab' stop-opacity='0.5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='800' height='400'/%3E%3Cg fill-opacity='0.4'%3E%3Ccircle fill='url(%23b)' cx='267.5' cy='61' r='300'/%3E%3Ccircle fill='url(%23b)' cx='532.5' cy='61' r='300'/%3E%3Ccircle fill='url(%23b)' cx='400' cy='30' r='300'/%3E%3C/g%3E%3C/svg%3E");
   background-attachment: fixed;
   background-size: cover;
+}
+
+.error-msg {
+  min-height: 60px;
+  line-height: 60px;
+  color: $error;
+  font-size: 14px;
+  text-align: left;
 }
 </style>

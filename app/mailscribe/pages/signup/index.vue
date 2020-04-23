@@ -138,7 +138,6 @@ export default {
 
 .error-msg {
   min-height: 60px;
-  margin-top: 4px;
   color: $error;
   font-size: 14px;
   text-align: left;
