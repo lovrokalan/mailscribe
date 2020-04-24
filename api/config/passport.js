@@ -1,6 +1,8 @@
 //we import passport packages required for authentication
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
+const passportJWT = require("passport-jwt");
+const JWTStrategy = passportJWT.Strategy;
 
 //We will need the models folder to check password validity
 var db = require("../models");
@@ -35,6 +37,24 @@ passport.use(new LocalStrategy(
     });
   }
 ));
+
+// Adding JWT strategy
+passport.use(
+  new JWTStrategy(
+    {
+      jwtFromRequest: (req) => {
+        return req.headers.authorization.split(" ")[1];
+      },
+      secretOrKey: "transmision vampire",
+    },
+    (jwtPayload, done) => {
+      if (Date.now() > jwtPayload.expires) {
+        return done("jwt expired");
+      }
+      return done(null, jwtPayload);
+    }
+  )
+);
 
 passport.serializeUser(function (user, cb) {
   cb(null, user);

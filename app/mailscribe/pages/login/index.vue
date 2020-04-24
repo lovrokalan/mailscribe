@@ -31,7 +31,7 @@
                 </text-input>
               </ValidationProvider>
             </div>
-            <button class="main-btn float-right" @click="login(invalid)">Sign In</button>
+            <button class="main-btn float-right" @click="invalid ? triggerFormValidation() : login(invalid)">Sign In</button>
           </form>
         </ValidationObserver>
 
@@ -66,20 +66,37 @@ export default {
     }
   },
   methods: {
-    async login(formIsInvalid) {
-      if (!formIsInvalid) {
+    async triggerFormValidation() {
+      await this.$refs.observer.validate();
+    },
+    async login(invalidForm) {
+      if (!invalidForm) {
         try {
-          const loginResponse = await this.$axios.$post('/login', {
-            email: this.email,
-            password: this.password
+          // const loginResponse = await this.$axios.$post('/login', {
+          //   email: this.email,
+          //   password: this.password
+          // });
+          // console.log(loginResponse);
+          // const JWToken = loginResponse.jwt;
+
+          const res = await this.$auth.loginWith('local', {
+            data: {
+              email: this.email,
+              password: this.password
+            },
           });
-          console.log(loginResponse);
-          this.$router.push({ path: '/home' });
+          console.log(res);
+
+          // this.$router.push({ path: '/home' });
+
+          // const res = await this.$axios.$get('/protected', {
+          //   headers: {
+          //     Authorization: 'Bearer ' + JWToken //the token is a variable which holds the token
+          //   }
+          // });
         } catch (err) {
-          this.loginError = 'Wrong Email or password!';
+          this.loginError = 'Wrong Email or Password!';
         }
-      } else {
-        await this.$refs.observer.validate();
       }
     }
   }

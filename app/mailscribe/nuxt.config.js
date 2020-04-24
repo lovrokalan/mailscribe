@@ -57,17 +57,19 @@ export default {
   /*
    ** Auth module configuration
    */
-  // auth: {
-  //   strategies: {
-  //     local: {
-  //       endpoints: {
-  //         login: { url: 'login', method: 'post', propertyName: 'data.token' },
-  //         user: { url: 'user_data', method: 'get', propertyName: 'data' },
-  //         logout: false
-  //       }
-  //     }
-  //   }
-  // }
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: 'login', method: 'post', propertyName: 'jwt' },
+          user: { url: 'user_data', method: 'get', propertyName: false },
+          logout: false
+        },
+        tokenRequired: true,
+        tokenType: 'Bearer'
+      }
+    }
+  },
 
   /*
    ** Build configuration

@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen flex">
-    Welcome!
+    Welcome! {{ $auth.user }}
   </div>
 </template>
 

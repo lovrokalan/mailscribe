@@ -1,8 +1,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var session = require("express-session");
+// var session = require("express-session");
 // Requiring passport with custom configuration
 var passport = require("./config/passport");
+const cors = require("cors");
 
 // Setting up port and requiring models
 var PORT = process.env.PORT || 8080;
@@ -20,12 +21,14 @@ var allowCrossDomain = function (req, res, next) {
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(cors());
+app.options("*", cors());
+// app.use(express.static("public"));
 app.use(allowCrossDomain);
 // We need to use sessions to keep track of our user's login status
-app.use(session({ secret: "keyboard cat", resave: true, saveUninitialized: true }));
+// app.use(session({ secret: "transmision vampire", resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 // Requiring our routes
 require("./routes/api-routes.js")(app);

@@ -90,6 +90,13 @@ export default {
         console.log(signUpResponse);
         if(signUpResponse.error) {
           this.signupError = signUpResponse.error;
+        } else {
+          await this.$auth.loginWith('local', {
+            data: {
+              email: this.email,
+              password: this.password
+            },
+          });
         }
       } else {
         await this.$refs.observer.validate();

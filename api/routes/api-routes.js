@@ -1,13 +1,35 @@
 // Requiring our models and passport as we've configured it
 var db = require("../models");
 var passport = require("../config/passport");
+const jwt = require("jsonwebtoken");
 
 module.exports = function (app) {
   // Using the passport.authenticate middleware with our local strategy.
   app.post("/login", passport.authenticate("local"), function (req, res) {
-    res.status(200).json({
+
+    // This is what ends up in our JWT
+    const payload = {
       email: req.user.email,
       id: req.user.id,
+      expires: Date.now() + 900000,
+    };
+
+    /** assigns payload to req.user */
+    req.login(payload, {session: false}, (error) => {
+      if (error) {
+        res.status(400).send({ error });
+      }
+
+      /** generate a signed json web token and return it in the response */
+      const token = jwt.sign(JSON.stringify(payload), "transmision vampire"); // add a secret
+
+      /** assign our jwt to the cookie */
+      // res.cookie('jwt', token, { httpOnly: true, secure: true });
+      res.status(200).json({
+        email: req.user.email,
+        id: req.user.id,
+        jwt: token
+      });
     });
   });
 
@@ -37,18 +59,17 @@ module.exports = function (app) {
     res.redirect("/");
   });
 
-  // Route for getting some data about our user to be used client side
-  app.get("/user_data", function (req, res) {
-    if (!req.user) {
-      // The user is not logged in, send back an empty object
-      res.json({});
-    }
-    else {
-      // Otherwise send back the user's email and id
+  app.get(
+    "/user_data",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      // const { user } = req;
+
+      // res.status(200).send({ user });
       res.json({
         email: req.user.email,
-        id: req.user.id
+        id: req.user.id,
       });
     }
-  });
+  );
 };
